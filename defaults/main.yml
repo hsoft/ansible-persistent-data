@@ -1,0 +1,27 @@
+---
+# MANDATORY Owner of the directory and scripts
+# persistent_data_user: myuser
+
+# MANDATORY Path where our scripts will live
+# persistent_data_path: /some/path
+
+# Where to place our export script
+persistent_data_export_script_path: "{{ persistent_data_path }}/export_data.sh"
+
+# Where to place our import script
+persistent_data_import_script_path: "{{ persistent_data_path }}/import_data.sh"
+
+# A list of folder paths to include in our archive.
+persistent_data_folders: []
+
+# A list of databases to include in our export/import routine.
+# List items must follow the structure of the example item below.
+persistent_data_databases: []
+
+# persistent_data_databases_item:
+#   name: dumpname.sql # that will be the name of the export in the tar
+#   type: postgres # 'postgres' or 'mariadb'
+#   dbhost: localhost # default 'localhost'
+#   dbname: dbname
+#   dbuser: dbuser
+#   dbpass: hunter2

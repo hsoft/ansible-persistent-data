@@ -1,0 +1,24 @@
+---
+- name: Ensure that persistent_data_user exists
+  user:
+    name: "{{ persistent_data_user }}"
+
+- name: Ensure that our base script path exists
+  file:
+    path: "{{ persistent_data_path }}"
+    state: directory
+    owner: "{{ persistent_data_user }}"
+
+- name: Ensure that we have a export_data.sh path
+  template:
+    src: export_data.sh.j2
+    dest: "{{ persistent_data_export_script_path }}"
+    owner: "{{ persistent_data_user }}"
+    mode: u=rwx,g=,o=
+
+- name: Ensure that we have a import_data.sh path
+  template:
+    src: import_data.sh.j2
+    dest: "{{ persistent_data_import_script_path }}"
+    owner: "{{ persistent_data_user }}"
+    mode: u=rwx,g=,o=

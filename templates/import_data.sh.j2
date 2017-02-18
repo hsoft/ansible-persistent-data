@@ -1,0 +1,32 @@
+#!/bin/bash
+
+WORKDIR=`mktemp -d`
+cd $WORKDIR
+
+# First of all, let's delete our backed up folders. We do this before extracting in case we're low
+# on disk space.
+{% for folder in persistent_data_folders %}
+rm -rf "{{ folder }}"
+{% endfor %}
+
+tar -x
+
+{% for folder in persistent_data_folders %}
+mv "{{ folder|basename }}" "{{ folder }}"
+{% endfor %}
+
+{% for dbitem in persistent_data_databases %}
+{% if dbitem.type == 'postgres' %}
+export PGPASSWORD="{{ dbitem.dbpass }}"
+pg_restore --clean --create -d {{ dbitem.dbname }} -U {{ dbitem.dbuser }} -h {{ dbitem.dbhost|default('localhost') }} < {{ dbitem.name }}
+{% endif %}
+
+{% if dbitem.type == 'mariadb' %}
+mysql -h {{ dbitem.dbhost|default('localhost') }} -u {{ dbitem.dbuser }} --password="{{ dbitem.dbpass }}" -e 'drop database {{ dbitem.dbname }}; create database {{ dbitem.dbname }};'
+mysql -h {{ dbitem.dbhost|default('localhost') }} -u {{ dbitem.dbuser }} --password="{{ dbitem.dbpass }}" -D {{ dbitem.dbname }} < {{ dbitem.name }}
+{% endif %}
+{% endfor %}
+
+cd /tmp
+rm -rf "${WORKDIR}"
+
