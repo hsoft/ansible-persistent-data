@@ -10,7 +10,7 @@ ln -s "{{ folder }}" .
 {% for dbitem in persistent_data_databases %}
 {% if dbitem.type == 'postgres' %}
 export PGPASSWORD="{{ dbitem.dbpass }}"
-pg_dump -d {{ dbitem.dbname }} -U {{ dbitem.dbuser }} -h {{ dbitem.dbhost|default('localhost') }} > {{ dbitem.name }}
+pg_dump -F t -d {{ dbitem.dbname }} -U {{ dbitem.dbuser }} -h {{ dbitem.dbhost|default('localhost') }} > {{ dbitem.name }}
 {% endif %}
 
 {% if dbitem.type == 'mariadb' %}

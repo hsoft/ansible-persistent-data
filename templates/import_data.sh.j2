@@ -18,7 +18,9 @@ mv "{{ folder|basename }}" "{{ folder }}"
 {% for dbitem in persistent_data_databases %}
 {% if dbitem.type == 'postgres' %}
 export PGPASSWORD="{{ dbitem.dbpass }}"
-pg_restore --clean --create -d {{ dbitem.dbname }} -U {{ dbitem.dbuser }} -h {{ dbitem.dbhost|default('localhost') }} < {{ dbitem.name }}
+dropdb -U {{ dbitem.dbuser }} -h {{ dbitem.dbhost|default('localhost') }} {{ dbitem.dbname }}
+createdb -U {{ dbitem.dbuser }} -h {{ dbitem.dbhost|default('localhost') }} {{ dbitem.dbname }}
+pg_restore -d {{ dbitem.dbname }} -U {{ dbitem.dbuser }} -h {{ dbitem.dbhost|default('localhost') }} {{ dbitem.name }}
 {% endif %}
 
 {% if dbitem.type == 'mariadb' %}
