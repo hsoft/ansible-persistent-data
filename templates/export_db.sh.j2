@@ -1,6 +1,9 @@
 {% if item.type == 'postgres' %}
+{% if item.dbpass|d() %}
 export PGPASSWORD="{{ item.dbpass }}"
-pg_dump -n public -c -d {{ item.dbname }} -U {{ item.dbuser }} -h {{ item.dbhost|default('localhost') }}
+export DBHOSTARG="-h {{ item.dbhost|default('localhost') }}"
+{% endif %}
+pg_dump -n public -c -d {{ item.dbname }} -U {{ item.dbuser }} $DBHOSTARG
 {% endif %}
 
 {% if item.type == 'mariadb' %}
