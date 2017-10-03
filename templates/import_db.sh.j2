@@ -1,0 +1,10 @@
+{% if item.type == 'postgres' %}
+export PGPASSWORD="{{ item.dbpass }}"
+psql -d {{ item.dbname }} -U {{ item.dbuser }} -h {{ item.dbhost|default('localhost') }}
+{% endif %}
+
+{% if item.type == 'mariadb' %}
+mysql -h {{ item.dbhost|default('localhost') }} -u {{ item.dbuser }} --password="{{ item.dbpass }}" -e 'drop database {{ item.dbname }}; create database {{ item.dbname }};'
+mysql -h {{ item.dbhost|default('localhost') }} -u {{ item.dbuser }} --password="{{ item.dbpass }}" -D {{ item.dbname }}
+{% endif %}
+

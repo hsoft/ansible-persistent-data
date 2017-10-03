@@ -16,17 +16,7 @@ mv "{{ folder|basename }}" "{{ folder }}"
 {% endfor %}
 
 {% for dbitem in persistent_data_databases %}
-{% if dbitem.type == 'postgres' %}
-export PGPASSWORD="{{ dbitem.dbpass }}"
-dropdb -U {{ dbitem.dbuser }} -h {{ dbitem.dbhost|default('localhost') }} {{ dbitem.dbname }}
-createdb -U {{ dbitem.dbuser }} -h {{ dbitem.dbhost|default('localhost') }} {{ dbitem.dbname }}
-pg_restore -d {{ dbitem.dbname }} -U {{ dbitem.dbuser }} -h {{ dbitem.dbhost|default('localhost') }} {{ dbitem.name }}
-{% endif %}
-
-{% if dbitem.type == 'mariadb' %}
-mysql -h {{ dbitem.dbhost|default('localhost') }} -u {{ dbitem.dbuser }} --password="{{ dbitem.dbpass }}" -e 'drop database {{ dbitem.dbname }}; create database {{ dbitem.dbname }};'
-mysql -h {{ dbitem.dbhost|default('localhost') }} -u {{ dbitem.dbuser }} --password="{{ dbitem.dbpass }}" -D {{ dbitem.dbname }} < {{ dbitem.name }}
-{% endif %}
+{{ persistent_data_path }}/import_db_{{ dbitem.name }}.sh < {{ dbitem.name }}
 {% endfor %}
 
 cd /tmp

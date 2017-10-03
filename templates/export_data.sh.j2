@@ -8,14 +8,7 @@ ln -s "{{ folder }}" .
 {% endfor %}
 
 {% for dbitem in persistent_data_databases %}
-{% if dbitem.type == 'postgres' %}
-export PGPASSWORD="{{ dbitem.dbpass }}"
-pg_dump -F t -d {{ dbitem.dbname }} -U {{ dbitem.dbuser }} -h {{ dbitem.dbhost|default('localhost') }} > {{ dbitem.name }}
-{% endif %}
-
-{% if dbitem.type == 'mariadb' %}
-mysqldump -h {{ dbitem.dbhost|default('localhost') }} -u {{ dbitem.dbuser }} --password="{{ dbitem.dbpass }}" {{ dbitem.dbname }} > {{ dbitem.name }}
-{% endif %}
+{{ persistent_data_path }}/export_db_{{ dbitem.name }}.sh > {{ dbitem.name }}
 {% endfor %}
 
 tar -ch *

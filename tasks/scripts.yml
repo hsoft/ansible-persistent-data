@@ -9,12 +9,28 @@
     state: directory
     owner: "{{ persistent_data_user }}"
 
+- name: Create export_db_*.sh scripts
+  template:
+    src: export_db.sh.j2
+    dest: "{{ persistent_data_path }}/export_db_{{ item.name }}.sh"
+    owner: "{{ persistent_data_user }}"
+    mode: u=rwx,g=,o=
+  with_items: "{{ persistent_data_databases }}"
+
 - name: Ensure that we have a export_data.sh path
   template:
     src: export_data.sh.j2
     dest: "{{ persistent_data_export_script_path }}"
     owner: "{{ persistent_data_user }}"
     mode: u=rwx,g=,o=
+
+- name: Create import_db_*.sh scripts
+  template:
+    src: import_db.sh.j2
+    dest: "{{ persistent_data_path }}/import_db_{{ item.name }}.sh"
+    owner: "{{ persistent_data_user }}"
+    mode: u=rwx,g=,o=
+  with_items: "{{ persistent_data_databases }}"
 
 - name: Ensure that we have a import_data.sh path
   template:

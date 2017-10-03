@@ -1,0 +1,8 @@
+{% if item.type == 'postgres' %}
+export PGPASSWORD="{{ item.dbpass }}"
+pg_dump -n public -c -d {{ item.dbname }} -U {{ item.dbuser }} -h {{ item.dbhost|default('localhost') }}
+{% endif %}
+
+{% if item.type == 'mariadb' %}
+mysqldump -h {{ item.dbhost|default('localhost') }} -u {{ item.dbuser }} --password="{{ item.dbpass }}" {{ item.dbname }}
+{% endif %}
